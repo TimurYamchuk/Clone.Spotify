@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        /* Стили для всплывающего окна оценки сайта */
+        .rating-popup {
+            display: none;
+            position: fixed;
+            bottom: 20px; /* Изменено положение вниз */
+            right: 30px;
+            padding: 8px;
+            color: #fff;
+            border-radius: 11px;
+            background-color: rgba(0, 0, 0, 0.8); /* Цвет фона с непрозрачностью */
+            text-align: center;
+            z-index: 100;
+            transform: scale(0.8);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .rating-popup h3 span {
+            opacity: 0.5;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 0.5;
+            }
+        }
+
+        .stars-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .stars {
+            font-size: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+            margin: 5px;
+            color: white;
+        }
+
+        .rating-popup-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .rating-popup-buttons button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #1DB954;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .rating-popup-buttons button:hover {
+            background-color: #0d8050;
+        }
+
+        /* Стили для светлой темы */
+        .light-theme {
+            background-color: #ffffff;
+            color: #fcfbfb;
+        }
+
+        /* Стили для темной темы */
+        .dark-theme {
+            background-color: #000000;
+            color: #070707;
+        }
+
+        /* Добавьте эти стили для всех элементов, которые вы хотите перекрасить в белый цвет */
+        .light-theme h1,
+        .light-theme p,
+        .light-theme button
+        /* Добавьте другие селекторы, если необходимо */
+        {
+            color: #ffffff; /* Белый цвет для текста */
+        }
+
+        .light-theme .playlist,
+        .light-theme .song
+        /* Добавьте другие селекторы, если необходимо */
+        {
+            background-color: #ffffff; /* Белый цвет для фона элементов */
+        }
+
+        /* Добавьте стили для темных элементов, если необходимо */
+
+    </style>
+</head>
+
+<body class="dark-theme">
+
+    <header>
+        <div class="logo">
+            <img src="/img/spotify-logo.png" alt="Spotify Logo">
+            <h1>Spotify</h1>
+        </div>
+        <div class="icons">
+            <img src="/img/acc.jpg" alt="User Icon">
+            <img src="/img/bell.jpg" alt="Settings Icon">
+            <img src="/img/home.jpg" alt="Notification Icon">
+            <a href="favorite.html" class="fav-link"><img src="/img/fav.png" alt="Favorite Tracks Icon"
+                    class="user-image">
+            </a>
+        </div>
+    </header>
+
+    <!-- Всплывающее окно с рекомендацией -->
+    <div class="rating-popup">
+        <h3>Rate this site</h3>
+        <div class="stars-container">
+            <div class="stars" data-rating="1">★</div>
+            <div class="stars" data-rating="2">★</div>
+            <div class="stars" data-rating="3">★</div>
+            <div class="stars" data-rating="4">★</div>
+            <div class="stars" data-rating="5">★</div>
+        </div>
+        <div class="rating-popup-buttons">
+            <button onclick="submitRating()">Submit</button>
+        </div>
+        <p id="selected-rating-message" style="margin-top: 10px; color: white;"></p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Показать всплывающее окно для оценки сайта через 5 секунд
+            setTimeout(showRatingPopup, 5000);
+        });
+
+        function showRatingPopup() {
+            var ratingPopup = document.querySelector(".rating-popup");
+            if (ratingPopup) {
+                ratingPopup.style.display = "block";
+            }
+
+            // Добавление обработчиков событий для звезд
+            var stars = document.querySelectorAll('.stars');
+            stars.forEach(function (star) {
+                star.addEventListener('mouseover', function () {
+                    var rating = this.getAttribute('data-rating');
+                    highlightStars(rating);
+                });
+
+                star.addEventListener('click', function () {
+                    var rating = this.getAttribute('data-rating');
+                    document.getElementById('selected-rating-message').innerHTML = "You selected: " + rating;
+                });
+            });
+        }
+
+        function submitRating() {
+            var ratingPopup = document.querySelector(".rating-popup");
+            if (ratingPopup) {
+                ratingPopup.style.display = "none";
+            }
+        }
+
+        function highlightStars(rating) {
+            var stars = document.querySelectorAll('.stars');
+            stars.forEach(function (star, index) {
+                star.style.color = index < rating ? 'gold' : 'white';
+            });
+        }
+
+        function toggleTheme() {
+            var body = document.body;
+            body.classList.toggle('light-theme');
+            body.classList.toggle('dark-theme');
+        }
+    </script>
+
+    <main>
+        <h2>Featured Playlists</h2>
+        <div class="playlist">
+            <!-- Playlist 1 -->
+
+            <!-- Добавьте следующий код куда-то внутри вашего <body> элемента -->
+            <button onclick="toggleTheme()">Toggle Theme</button>
+
+            <div class="song">
+                <img src="/img/tory2.jpg" alt="Playlist 1 Image">
+                <img class="gif" src="/img/tory.gif" alt="Playlist 1 GIF">
+                <div class="song-info">
+                    <p class="song-title">Every Day Playlist</p>
+                    <div class="buttons">
+                        <a class="button" href="everyday.html">Play</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playlist 2 -->
+            <a href="playlist1.html"></a>
+            <div class="song">
+                <img src="/img/utopia.jpg" alt="Playlist 2 Image">
+                <img class="gif" src="/img/trav.gif" alt="Playlist 2 GIF">
+                <div class="song-info">
+                    <p class="song-title">Rage Playlist</p>
+                    <div class="buttons">
+                        <a class="button" href="rage.html">Play</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playlist 3 -->
+            <a href="playlist1.html"></a>
+            <div class="song">
+                <img src="/img/queen.jpg" alt="Playlist 3 Image">
+                <img class="gif" src="/img/rick.gif" alt="Playlist 3 GIF">
+                <div class="song-info">
+                    <p class="song-title">Classic Playlist</p>
+                    <div class="buttons">
+                        <a class="button" href="classic.html">Play</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playlist 4 -->
+            <a href="playlist1.html"></a>
+            <div class="song">
+                <img src="/img/malone.jpg" alt="Playlist 4 Image">
+                <img class="gif" src="/img/post.gif" alt="Playlist 4 GIF">
+                <div class="song-info">
+                    <p class="song-title">Chill Playlist</p>
+                    <div class="buttons">
+                        <a class="button" href="chill.html">Play</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

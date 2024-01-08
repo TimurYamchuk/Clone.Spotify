@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/everyday.css">
+    <title>My Music Playlist</title>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="/img/spotify-logo.png" alt="Spotify Logo">
+            <h1>Spotify</h1>
+        </div>
+
+        <div class="icons">
+            <img src="/img/acc.jpg" alt="User Icon">
+            <img src="/img/bell.jpg" alt="Settings Icon">
+            <a href="main.html"><img src="/img/home.jpg" alt="Notification Icon"></a>
+        </div>
+    </header>
+    <main>
+        <div class="box_playlist_info"></div>
+
+        <div class="playlist-info">
+            <img class="gif" src="/img/tory.gif" alt="Every Day Playlist GIF">
+            <div class="text1">Every Day Playlist</div>
+        </div>
+
+        <hr>
+
+        <div class="song-container">
+            <div class="song">
+                <img src="/img/tecca.jpg" alt="Song 1">
+                <div class="song-info">
+                    <p class="song-title">Lil Tecca - 500lbs</p>
+                </div>
+                <div class="buttons">
+                    <button class="button button-play" onclick="togglePlayPause('/music/Lil Tecca - 500lbs.mp3', 'playPauseIcon1')">
+                        <img id="playPauseIcon1" src="/img/play.jpg" alt="Play Icon">
+                    </button>
+                    <button class="button button-favorite" onclick="addToFavorites('Lil Tecca - 500lbs')">
+                        <img src="/img/fav.png" alt="Favorite Tracks Icon">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="song-container">
+            <div class="song">
+                <img src="/img/tory3.jpg" alt="Song 2">
+                <div class="song-info">
+                    <p class="song-title">Tory Lanez - The Color Violet</p>
+                </div>
+                <div class="buttons">
+                    <button class="button button-play" onclick="togglePlayPause('/music/Tory Lanez - The Color Violet.mp3', 'playPauseIcon2')">
+                        <img id="playPauseIcon2" src="/img/play.jpg" alt="Play Icon">
+                    </button>
+                    <button class="button button-favorite" onclick="addToFavorites('Tory Lanez - The Color Violet')">
+                        <img src="/img/fav.png" alt="Favorite Tracks Icon">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="song-container">
+            <div class="song">
+                <img src="/img/offset.jpg" alt="Song 3">
+                <div class="song-info">
+                    <p class="song-title">Offset - FAN</p>
+                </div>
+                <div class="buttons">
+                    <button class="button button-play" onclick="togglePlayPause('/music/Offset - FAN.mp3', 'playPauseIcon3')">
+                        <img id="playPauseIcon3" src="/img/play.jpg" alt="Play Icon">
+                    </button>
+                    <button class="button button-favorite" onclick="addToFavorites('Offset - FAN')">
+                        <img src="/img/fav.png" alt="Favorite Tracks Icon">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="song-duration"></div>
+        <div id="progress-container">
+            <input type="range" id="song-progress" value="0" step="0.01" oninput="setProgress()">
+        </div>
+
+        <script>
+            var audio = new Audio();
+            var currentPlayPauseIconId;
+
+            function playSong(songUrl, playPauseIconId) {
+                if (currentPlayPauseIconId && currentPlayPauseIconId !== playPauseIconId) {
+                    pauseSong(currentPlayPauseIconId);
+                }
+
+                audio.src = songUrl;
+                audio.play();
+
+                audio.addEventListener('timeupdate', function () {
+                    var currentTime = audio.currentTime.toFixed(2);
+                    var duration = audio.duration.toFixed(2);
+                    document.getElementById('song-duration').innerText = currentTime + 's / ' + duration + 's';
+                    document.getElementById('song-progress').value = (currentTime / duration) * 100;
+                });
+
+                currentPlayPauseIconId = playPauseIconId;
+
+                var playPauseIcon = document.getElementById(playPauseIconId);
+                playPauseIcon.src = '/img/pause.jpg';
+            }
+
+            function pauseSong(playPauseIconId) {
+                audio.pause();
+
+                var playPauseIcon = document.getElementById(playPauseIconId);
+                playPauseIcon.src = '/img/play.jpg';
+            }
+
+            let isPlaying = false;
+
+            function togglePlayPause(songUrl, playPauseIconId) {
+                if (isPlaying) {
+                    pauseSong(playPauseIconId);
+                } else {
+                    playSong(songUrl, playPauseIconId);
+                }
+                isPlaying = !isPlaying;
+            }
+
+            function addToFavorites(songTitle) {
+                var favoriteList = JSON.parse(localStorage.getItem('favoriteList')) || [];
+
+                var index = favoriteList.indexOf(songTitle);
+
+                if (index === -1) {
+                    favoriteList.push(songTitle);
+                } else {
+                    favoriteList.splice(index, 1);
+                }
+
+                localStorage.setItem('favoriteList', JSON.stringify(favoriteList));
+                updateFavoritePage();
+            }
+
+            function updateFavoritePage() {
+                var favoriteList = JSON.parse(localStorage.getItem('favoriteList')) || [];
+                var favoriteContainer = document.querySelector('.favorite-container');
+
+                favoriteContainer.innerHTML = '';
+
+                favoriteList.forEach(function (songTitle) {
+                    var songElement = document.createElement('div');
+                    songElement.textContent = songTitle;
+                    favoriteContainer.appendChild(songElement);
+                });
+            }
+
+            function setProgress() {
+                var progress = document.getElementById('song-progress').value;
+                audio.currentTime = (progress / 100) * audio.duration;
+            }
+
+
+            
+
+            function addToFavoritesFromPlaylist(songTitle, songUrl) {
+        // Получаем текущий список избранного из localStorage
+        var favoriteList = JSON.parse(localStorage.getItem('favoriteList')) || [];
+
+        // Ищем песню в списке по названию
+        var index = favoriteList.findIndex(function (song) {
+            return song.title === songTitle;
+        });
+
+        // Если песни нет в списке, добавляем её, иначе удаляем
+        if (index === -1) {
+            favoriteList.push({ title: songTitle, url: songUrl });
+        } else {
+            favoriteList.splice(index, 1);
+        }
+
+        // Обновляем список избранного в localStorage
+        localStorage.setItem('favoriteList', JSON.stringify(favoriteList));
+
+        // Вызываем функцию обновления страницы избранного
+        updateFavoritePage();
+    }
+
+    // Функция для обновления страницы избранного
+    function updateFavoritePage() {
+        // Этот блок будет обновлять страницу favorite.html
+        // Можете заменить его AJAX-запросом для динамического обновления содержимого favorite.html
+        var favoritePage = window.open('favorite.html', '_blank');
+        favoritePage.onload = function () {
+            favoritePage.postMessage({ action: 'updateFavorites' }, '*');
+        };
+    }
+
+    // Пример: Добавление обработчика событий на кнопку с изображением "fav.png"
+    document.getElementById('favButton').addEventListener('click', function () {
+        var songTitle = "Lil Tecca - 500lbs"; // Замените на реальное название песни
+        var songUrl = "/music/Lil Tecca - 500lbs.mp3"; // Замените на реальный URL песни
+        addToFavoritesFromPlaylist(songTitle, songUrl);
+    });
+        </script>
+    </main>
+</body>
+
+</html>
